@@ -17,6 +17,16 @@ from datetime import datetime
 import pickle
 
 def load_data(database_filepath):
+    """load data from database file
+    Parameters:
+    database_filepath - file path for database
+
+    Returns:
+    X - Input variables in pandas dataframe
+    Y - Output variables in pandas dataframe
+    category_names - list of column names for categories
+    """
+
     # load data from database
     engine = create_engine('sqlite:///{}'.format(database_filepath))
     conn = engine.connect()
@@ -27,6 +37,14 @@ def load_data(database_filepath):
     return X, Y, category_names
 
 def tokenize(text):
+    """tokenize the paragraph and store in a list of tokens
+    Parameters:
+    text - string
+
+    Returns:
+    clean_tokens - list of tokens
+    """
+
     #tokenize and lemmatize raw text and return clean tokens
     stop_words = set(stopwords.words('english'))
     tokens = word_tokenize(text)
@@ -39,6 +57,13 @@ def tokenize(text):
     return clean_tokens
 
 def build_model():
+    """machine learning pipeline to find out the best model
+    Parameters:
+    None
+
+    Returns:
+    cv - estimator
+    """
     pipeline = Pipeline([
     ('vect', CountVectorizer(tokenizer=tokenize)),
     ('tfidf', TfidfTransformer(smooth_idf=False)),
@@ -56,6 +81,16 @@ def build_model():
     return cv
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    """evalute the estimator in f1_score, precision and recall for each category
+    Parameters:
+    model - estimator
+    X_test - Input variables in pandas dataframe
+    Y_test - Output variables in pandas dataframe
+    category_names - list of column names for categories
+
+    Returns:
+    None
+    """
     Y_preds = model.predict(X_test)
 
     #transpose the values for each categories
@@ -67,7 +102,6 @@ def evaluate_model(model, X_test, Y_test, category_names):
     for e in range(Y_preds_transpose.shape[0]):
         validation = classification_report(Y_test_transpose.iloc[e,:].values, Y_preds_transpose[e], output_dict=True)
         score.append((category_names[e], validation))
-    print(score)
 
 
 def save_model(model, model_filepath):
