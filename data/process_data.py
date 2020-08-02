@@ -32,6 +32,9 @@ def clean_data(df):
         # convert column from string to numeric
         categories[column] = pd.to_numeric(categories[column])
 
+    # drop values that is not 1 or 0
+    categories = categories[categories.related != 2]
+
     # drop the original categories column from `df`
     df.drop(columns="categories", inplace=True)
 
@@ -45,7 +48,7 @@ def clean_data(df):
 
 def save_data(df, database_filename):
     engine = create_engine('sqlite:///{}'.format(database_filename))
-    df.to_sql('DisasterResponse', engine, index=False)
+    df.to_sql('DisasterResponse', engine, index=False, if_exists='replace')
 
 
 def main():
