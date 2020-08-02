@@ -50,9 +50,6 @@ def clean_data(df):
         # convert column from string to numeric
         categories[column] = pd.to_numeric(categories[column])
 
-    # drop values that is not 1 or 0
-    categories = categories[categories.related != 2]
-
     # drop the original categories column from `df`
     df.drop(columns="categories", inplace=True)
 
@@ -61,6 +58,9 @@ def clean_data(df):
 
     # drop duplicates
     df.drop_duplicates(inplace=True)
+
+    # drop values that is not 1 or 0
+    df = df[df.related != 2]
 
     return df
 
