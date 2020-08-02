@@ -15,6 +15,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.externals import joblib
 from datetime import datetime
 import pickle
+import pprint
 
 def load_data(database_filepath):
     """load data from database file
@@ -96,13 +97,16 @@ def evaluate_model(model, X_test, Y_test, category_names):
     #transpose the values for each categories
     Y_preds_transpose = np.transpose(Y_preds)
     Y_test_transpose = np.transpose(Y_test)
-    score = []
+    scores = []
 
     #evaluate the model by categories
     for e in range(Y_preds_transpose.shape[0]):
         validation = classification_report(Y_test_transpose.iloc[e,:].values, Y_preds_transpose[e], output_dict=True)
-        score.append((category_names[e], validation))
+        scores.append((category_names[e], validation))
 
+    #print out scores
+    for score in scores:
+        pprint.pprint(score)
 
 def save_model(model, model_filepath):
     pickle.dump(model, open(model_filepath, 'wb'))
