@@ -66,6 +66,7 @@ def clean_data(df):
 
 def save_data(df, database_filename):
     """Save cleaned dataframe to SQL database file
+
     Parameters:
     df - pandas dataframe
     database_filename - name of the SQL database file
